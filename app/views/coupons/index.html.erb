@@ -1,6 +1,12 @@
 <%= render partial: "shared/nav" %>
 
 <body>
+  <div class="row">
+  <p class='col-12'>My Coupons</p>
+  </div>
+
+  <p><%= link_to "Create New Coupon", new_merchant_coupon_path(@merchant) %></p>
+
 
   <% @merchant.coupons.each do |coupon| %>
     <% if coupon.discount_type == "dollar_off" %>
