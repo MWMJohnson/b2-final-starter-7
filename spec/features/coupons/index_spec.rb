@@ -81,24 +81,24 @@ RSpec.describe "merchant coupons" do
     expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon_1.id}")
   end
 
-  # it "has a link to create a new coupon" do
-  #   click_link "Create New Coupon"
-  #   expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
-  #   fill_in "Name", with: "15% off!"
-  #   fill_in "Code", with: "15-P"
-    # select "Activate"
-    # select "Percent"
-    # fill_in "Discount Value", with: "15"
+  it "has a link to create a new coupon" do
+    click_link "Create New Coupon"
 
-  #   click_button "Submit"
+    expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
+    fill_in "Name", with: "15% off!"
+    fill_in "Code", with: "15-P"
+    select "Activated", from: "status"
+    select "Percentage", from: "discount_type"
+    fill_in "Discount amount", with: "15"
 
-  #   expect(current_path).to eq(merchant_coupons_path(@merchant1))
+    click_button "Submit"
 
-  #   within("#active") do
-  #     expect(page).to have_content("15% off!")
-  #   end
-  # end
+    expect(current_path).to eq(merchant_coupons_path(@merchant1))
 
+    # within("#active") do
+    #   expect(page).to have_content("15% off!")
+    # end
+  end
 end
 
 
