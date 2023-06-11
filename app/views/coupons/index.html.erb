@@ -1,0 +1,12 @@
+<%= render partial: "shared/nav" %>
+
+<body>
+
+  <% @merchant.coupons.each do |coupon| %>
+    <% if coupon.discount_type == "dollar_off" %>
+      <p>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> dollars off!</p>
+    <% elsif coupon.discount_type == "percent_off" %>
+      <p>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> percent off!</p>
+    <% end %>
+  <% end %>
+</body>
