@@ -35,14 +35,14 @@ class Merchant < ApplicationRecord
     .group(:id)
     .order('total_revenue desc')
     .limit(5)
-   end
+  end
 
   def self.top_merchants
     joins(invoices: [:invoice_items, :transactions])
     .where('result = ?', 1)
     .select('merchants.*, sum(invoice_items.quantity * invoice_items.unit_price) AS total_revenue')
     .group(:id)
-    .order('total_revenue DESC')
+    .order('total_revenue DESC', :id)
     .limit(5)
   end
 
@@ -62,4 +62,14 @@ class Merchant < ApplicationRecord
   def disabled_items
     items.where(status: 0)
   end
+
+  def activated_coupons
+    coupons.where(status: 1)
+  end
+
+  def deactivated_coupons
+    coupons.where(status: 0)
+  end
+
+
 end

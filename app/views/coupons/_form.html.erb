@@ -1,0 +1,13 @@
+<%= form_with model: model, method: method, url: url, class: 'merchant_coupon_form', local: true do |f| %>
+  <%= f.label :name, "Name:" %>
+  <%= f.text_field :name %><br/><br/>
+  <%= f.label :code, "Code:" %>
+  <%= f.text_field :code %><br/><br/>
+  <%= f.label :status, "Status:" %>
+  <%= f.select :status, options_for_select(["Deactivated", "Activated"]) %><br/><br/>
+  <%= f.label :discount_type, "Type based off:" %>
+  <%= f.select :discount_type, options_for_select(["Dollar", "Percentage"]) %><br/><br/>
+  <%= f.label :discount_value, "Discount amount:" %>
+  <%= f.number_field :discount_value %><br/><br/>
+  <%= f.submit "Submit"%>
+<% end %>

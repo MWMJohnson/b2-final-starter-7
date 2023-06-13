@@ -52,12 +52,111 @@ RSpec.describe "merchant coupons" do
     visit merchant_coupons_path(@merchant1)
   end
 
+  it "can see a list of all the names of my items and not items for other merchants" do
+    expect(page).to have_content(@coupon_1.name)
+    expect(page).to have_content(@coupon_2.name)
+    expect(page).to have_content(@coupon_3.name)
+    expect(page).to have_content(@coupon_4.name)
+    expect(page).to have_content(@coupon_5.name)
+
+    expect(page).to have_no_content(@coupon_6.name)
+  end
+
+  it "has links to each coupon's show pages" do
+    expect(page).to have_link(@coupon_1.name)
+    expect(page).to have_link(@coupon_2.name)
+    expect(page).to have_link(@coupon_3.name)
+    expect(page).to have_link(@coupon_4.name)
+    expect(page).to have_link(@coupon_5.name)
+
+    within("#activated") do
+      click_link "#{@coupon_2.name}"
+
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon_2.id}")
+    end
+  end
+
+  it "can make a button to deactivate coupons" do
+    within("#coupon-#{@coupon_2.id}") do
+      click_button "Deactivate"
+
+      coupon = Coupon.find(@coupon_2.id)
+      expect(coupon.status).to eq("deactivated")
+    end
+    within("#coupon-#{@coupon_1.id}") do
+      click_button "Activate"
+
+      coupon = Coupon.find(@coupon_1.id)
+      expect(coupon.status).to eq("activated")
+    end
+    within("#coupon-#{@coupon_3.id}") do
+      click_button "Activate"
+
+      coupon = Coupon.find(@coupon_3.id)
+      expect(coupon.status).to eq("activated")
+    end
+  end
+
+  it "has a section for deactivated coupons" do
+    within("#deactivated") do
+      expect(page).to have_content(@coupon_1.name)
+      expect(page).to have_content(@coupon_3.name)
+      expect(page).to_not have_content(@coupon_2.name)
+    end
+  end
+
+  it "has a section for activated items" do
+    within("#activated") do
+      expect(page).to_not have_content(@coupon_1.name)
+      expect(page).to_not have_content(@coupon_3.name)
+      expect(page).to have_content(@coupon_2.name)
+    end
+  end
+
+  it "has a link to create a new coupon" do
+    click_link "Create New Coupon"
+
+    expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
+    fill_in "Name", with: "15% off!"
+    fill_in "Code", with: "15-P"
+    select "Activated", from: "status"
+    select "Percentage", from: "discount_type"
+    fill_in "Discount amount", with: "15"
+
+    click_button "Submit"
+    
+    expect(current_path).to eq(merchant_coupons_path(@merchant1))
+    
+    within("#activated") do
+      expect(page).to have_content("15% off!")
+    end
+
+    click_link "Create New Coupon"
+
+    expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
+    fill_in "Name", with: "$18 off!"
+    fill_in "Code", with: "18-D"
+    select "Deactivated", from: "status"
+    select "Dollar", from: "discount_type"
+    fill_in "Discount amount", with: "18"
+
+    click_button "Submit"
+    
+    expect(current_path).to eq(merchant_coupons_path(@merchant1))
+    
+    within("#deactivated") do
+      expect(page).to have_content("$18 off!")
+    end
+  end
+
+
   it "can see all coupon names with their amount off " do
+    
     expect(page).to have_content("Coupon name: #{@coupon_1.name}")
-    expect(page).to have_content("value is #{@coupon_1.discount_value.round} percent off!")
+    expect(page).to have_content("value is 5 percent off!")
 
     expect(page).to have_content("Coupon name: #{@coupon_2.name}")
-    expect(page).to have_content("value is #{@coupon_2.discount_value.round} dollars off!")
+    expect(page).to have_content("value is 10 dollars off!")
 
     expect(page).to have_content("Coupon name: #{@coupon_3.name}")
     expect(page).to have_content("value is #{@coupon_3.discount_value.round} percent off!")
@@ -80,24 +179,6 @@ RSpec.describe "merchant coupons" do
     click_link("#{@coupon_1.name}", match: :first)
     expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon_1.id}")
   end
-
-  # it "has a link to create a new coupon" do
-  #   click_link "Create New Coupon"
-  #   expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
-  #   fill_in "Name", with: "15% off!"
-  #   fill_in "Code", with: "15-P"
-    # select "Activate"
-    # select "Percent"
-    # fill_in "Discount Value", with: "15"
-
-  #   click_button "Submit"
-
-  #   expect(current_path).to eq(merchant_coupons_path(@merchant1))
-
-  #   within("#active") do
-  #     expect(page).to have_content("15% off!")
-  #   end
-  # end
 
 end
 
