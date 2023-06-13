@@ -7,12 +7,50 @@
 
   <p><%= link_to "Create New Coupon", new_merchant_coupon_path(@merchant) %></p>
 
+  <div class="row">
+  <div class="col-sm-6">
+    <div class="column-header">
+      <p>Activated Coupons</p>
+    </div>
 
-  <% @merchant.coupons.each do |coupon| %>
-    <% if coupon.discount_type == "dollar_off" %>
-      <p>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> dollars off!</p>
-    <% elsif coupon.discount_type == "percent_off" %>
-      <p>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> percent off!</p>
-    <% end %>
-  <% end %>
+  <ul>
+    <section id="activated">
+      <% @activated_coupons.each do |coupon| %>
+        <section id="coupon-<%= coupon.id %>">
+          <% if coupon.discount_type == "dollar_off" || coupon.discount_type == "Dollar" %>
+            <li>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> dollars off!</li>
+          <% elsif coupon.discount_type == "percent_off" || coupon.discount_type == "Percentage" %>
+            <li>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> percent off!</li>
+          <% end %>
+          <%= button_to "Deactivate", merchant_coupon_status_path(@merchant, coupon), method: :patch, params: {status: "deactivated"} %>
+        </section>
+      <% end %>
+    </section>
+  </ul>
+
+  </div>
+
+
+  <div class="col-sm-6">
+    <div class="column-header">
+      <p>Deactivated Coupons</p>
+    </div>
+    <ul>
+    <section id="deactivated">
+      <% @deactivated_coupons.each do |coupon| %>
+        <section id="coupon-<%= coupon.id %>">
+          <% if coupon.discount_type =="dollar_off" || coupon.discount_type == "Dollar" %>
+            <li>Coupon name <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %> value is <%= coupon.discount_value.round %> dollars off!</li>
+          <% elsif coupon.discount_type == "percent_off" || coupon.discount_type == "Percentage" %>  
+            <li>Coupon name: <%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>, value is <%= coupon.discount_value.round %> percent off!</li>
+          <% end %>
+          <%= button_to "Activate", merchant_coupon_status_path(@merchant, coupon), method: :patch, params: {status: "activated"} %>
+        </section>
+      <% end %>
+    </section>
+  </ul>
+  </div>
+</div>
+
+
 </body>
