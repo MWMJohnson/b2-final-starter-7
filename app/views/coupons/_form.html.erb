@@ -4,9 +4,9 @@
   <%= f.label :code, "Code:" %>
   <%= f.text_field :code %><br/><br/>
   <%= f.label :status, "Status:" %>
-  <%= f.select :status, options_for_select(["Deactivated", "Activated"]) %><br/><br/>
+  <%= f.select :status, options_for_select(["deactivated", "activated"]) %><br/><br/>
   <%= f.label :discount_type, "Type based off:" %>
-  <%= f.select :discount_type, options_for_select(["Dollar", "Percentage"]) %><br/><br/>
+  <%= f.select :discount_type, options_for_select(["dollar_off", "percent_off"]) %><br/><br/>
   <%= f.label :discount_value, "Discount amount:" %>
   <%= f.number_field :discount_value %><br/><br/>
   <%= f.submit "Submit"%>

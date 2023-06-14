@@ -1,0 +1,15 @@
+<h1> Coupon Info</h1>
+<p>Coupon name: <%=@coupon.name%></p>
+<p>Coupon code: <%=@coupon.code%></p>
+<% if @coupon.dollar_off? %>
+  <p>Coupon value: $<%=sprintf('%.2f', @coupon.discount_value)%></p>
+<% elsif @coupon.percent_off? %>
+  <p>Coupon value: <%=sprintf('%.2f', @coupon.discount_value)%>%</p>
+<% end %> 
+<p>Coupon status: <%=@coupon.status%></p>
+<p>Coupon used <%=@coupon.times_used%> times</p>
+<% if @coupon.activated? %>
+  <%= button_to "Deactivate", merchant_coupon_path(@merchant, @coupon), method: :patch, params: {status: "deactivated"} %>
+<% else %>  
+  <%= button_to "Activate", merchant_coupon_path(@merchant, @coupon), method: :patch, params: {status: "activated"} %>
+<% end %>

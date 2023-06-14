@@ -119,8 +119,8 @@ RSpec.describe "merchant coupons" do
     expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
     fill_in "Name", with: "15% off!"
     fill_in "Code", with: "15-P"
-    select "Activated", from: "status"
-    select "Percentage", from: "discount_type"
+    select "activated", from: "status"
+    select "percent_off", from: "discount_type"
     fill_in "Discount amount", with: "15"
 
     click_button "Submit"
@@ -136,8 +136,8 @@ RSpec.describe "merchant coupons" do
     expect(current_path).to eq(new_merchant_coupon_path(@merchant1))
     fill_in "Name", with: "$18 off!"
     fill_in "Code", with: "18-D"
-    select "Deactivated", from: "status"
-    select "Dollar", from: "discount_type"
+    select "deactivated", from: "status"
+    select "dollar_off", from: "discount_type"
     fill_in "Discount amount", with: "18"
 
     click_button "Submit"

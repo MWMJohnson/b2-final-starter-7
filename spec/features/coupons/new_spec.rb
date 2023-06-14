@@ -69,8 +69,8 @@ RSpec.describe "merchant coupons new" do
 
     fill_in "Name", with: "Test-Example part 2"
     fill_in "Code", with: "T-1"
-    select "Deactivated", from: "status"
-    select "Percentage", from: "discount_type"
+    select "deactivated", from: "status"
+    select "percent_off", from: "discount_type"
     fill_in "Discount amount", with: "10"
 
     click_button "Submit"
