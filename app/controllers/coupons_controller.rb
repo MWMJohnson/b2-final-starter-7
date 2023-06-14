@@ -3,6 +3,7 @@ class CouponsController < ApplicationController
     @merchant = Merchant.find(params[:merchant_id])
     @deactivated_coupons = @merchant.deactivated_coupons
     @activated_coupons = @merchant.activated_coupons
+    @upcoming_holidays = HolidaySearch.holiday(3)
   end
 
   def show

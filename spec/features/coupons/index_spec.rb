@@ -179,6 +179,21 @@ RSpec.describe "merchant coupons" do
     click_link("#{@coupon_1.name}", match: :first)
     expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon_1.id}")
   end
+  
+  it "should display a header called 'Upcoming Holidays' that shows next 3 upcoming holidays" do
+    visit merchant_coupons_path(@merchant1)
+    
+    expect(page).to have_content("Upcoming Holidays")
+    expect(page).to have_content("Juneteenth")
+    expect(page).to have_content("Independence Day")
+    expect(page).to have_content("Labour Day")
+    expect(page).to_not have_content("Columbus Day")
+    expect(page).to have_content("2023-06-19")
+    expect(page).to have_content("2023-07-04")
+    expect(page).to have_content("2023-09-04")
+    expect(page).to_not have_content("2023-10-09")
+  end
+
 
 end
 

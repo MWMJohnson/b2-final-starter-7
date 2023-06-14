@@ -1,5 +1,10 @@
 <%= render partial: "shared/nav" %>
 
+<h1>Upcoming Holidays</h1>
+<% @upcoming_holidays.each do |holiday|%>
+  <p><%= holiday.name %> - <%= holiday.date %></p>
+<% end %>  
+
 <body>
   <div class="row">
   <p class='col-12'>My Coupons</p>
