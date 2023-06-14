@@ -14,4 +14,27 @@ class Invoice < ApplicationRecord
   def total_revenue
     invoice_items.sum("unit_price * quantity")
   end
+
+  def gross_profit
+    subtotal = total_revenue
+    if coupon.present?
+      if total_revenue - calc_discount(subtotal) > 0
+        total_revenue - calc_discount(subtotal)
+      else
+        0
+      end
+    else
+      total_revenue
+    end
+  end
+
+  def calc_discount(subtotal)
+    if coupon.percent_off?
+      subtotal * (coupon.discount_value / 100.0)
+    else
+      coupon.discount_value
+    end
+  end
+
+
 end
