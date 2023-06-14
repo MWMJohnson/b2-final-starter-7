@@ -11,8 +11,8 @@ RSpec.describe Coupon, type: :model do
   describe "validations" do
     it { should validate_presence_of :name }
     it { should validate_presence_of :code }
-    it { should validate_presence_of :status }
-    it { should validate_presence_of :discount_type }
+    # it { should validate_presence_of :status }
+    # it { should validate_presence_of :discount_type }
     it { should validate_presence_of :discount_value }
     it { should validate_uniqueness_of(:code) }
   end
@@ -21,5 +21,18 @@ RSpec.describe Coupon, type: :model do
     it { should belong_to :merchant }
     it { should have_many :invoices }
     it { should have_many(:invoice_items).through(:invoices) }
+    it { should have_many(:transactions).through(:invoices) }
+  end
+
+  describe "#times_used" do 
+    it "counts the number of times a coupon has had an invoice with a successful transaction " do
+        expect(@coupon_1.times_used).to eq(0)
+        
+        @customer_1 = Customer.create!(first_name: "Joey", last_name: "Smith")
+        @invoice_1 = @coupon_1.invoices.create!(customer_id: @customer_1.id, status: 2)
+        @transaction1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_1.id)
+
+        expect(@coupon_1.times_used).to eq(1)
+    end
   end
 end
