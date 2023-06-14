@@ -5,6 +5,13 @@ RSpec.describe "invoices show" do
     @merchant1 = Merchant.create!(name: "Hair Care")
     @merchant2 = Merchant.create!(name: "Jewelry")
 
+    @coupon_1 = @merchant1.coupons.create!(name: "5% off!", code: "5-P", status: 0, discount_type: 1, discount_value: 5)
+    @coupon_2 = @merchant1.coupons.create!(name: "$5 off!", code: "5-D", status: 1, discount_type: 1, discount_value: 5)
+    @coupon_3 = @merchant1.coupons.create!(name: "10% off!", code: "10-P", status: 0, discount_type: 1, discount_value: 10)
+    @coupon_4 = @merchant1.coupons.create!(name: "$10 off!", code: "10-D", status: 1, discount_type: 1, discount_value: 10)
+    @coupon_5 = @merchant1.coupons.create!(name: "25% off!", code: "25-P", status: 0, discount_type: 1, discount_value: 25)
+    @coupon_6 = @merchant2.coupons.create!(name: "$25 off!", code: "25-D", status: 1, discount_type: 0, discount_value: 25)
+
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
     @item_3 = Item.create!(name: "Brush", description: "This takes out tangles", unit_price: 5, merchant_id: @merchant1.id)
@@ -22,8 +29,8 @@ RSpec.describe "invoices show" do
     @customer_5 = Customer.create!(first_name: "Sylvester", last_name: "Nader")
     @customer_6 = Customer.create!(first_name: "Herber", last_name: "Kuhn")
 
-    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
-    @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-28 14:54:09")
+    @invoice_1 = @coupon_1.invoices.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
+    @invoice_2 = @coupon_2.invoices.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-28 14:54:09")
     @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2)
     @invoice_4 = Invoice.create!(customer_id: @customer_3.id, status: 2)
     @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2)
@@ -98,6 +105,31 @@ RSpec.describe "invoices show" do
     within("#current-invoice-status") do
       expect(page).to_not have_content("in progress")
     end
+  end
+
+  it "displays the Subtotal (total cost without applied discount)" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+    expect(page).to have_content("Subtotal: $162.00")
+
+    visit merchant_invoice_path(@merchant2, @invoice_2)
+    expect(page).to have_content("Subtotal: $10.00")
+  end
+
+  it "displays the Grand Total Revenue (total revenue minus applied discount)" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+    expect(page).to have_content("Grand Total Revenue: $153.90")
+
+    visit merchant_invoice_path(@merchant2, @invoice_2)
+    expect(page).to have_content("Grand Total Revenue: $9.50")
+  end
+
+  it "shows coupon used and links to that coupons show page" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+
+    expect(page).to have_content("Coupon Used: #{@coupon_1.name} #{@coupon_1.code}")
+    
+    click_link("#{@coupon_1.name} #{@coupon_1.code}")
+    expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon_1))
   end
 
 end

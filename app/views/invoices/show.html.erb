@@ -11,8 +11,11 @@
   <br>
 
   <p> Created on: <%= @invoice.created_at.strftime("%A, %B %-d, %Y") %></p>
-  <p>Total Revenue: <%= @invoice.total_revenue %></p>
-
+  <p>Subtotal: <%= number_to_currency(@invoice.total_revenue) %></p>
+  <p>Grand Total Revenue: <%= number_to_currency(@invoice.gross_profit) %></p>
+  <% if @invoice.coupon %>
+    <p>Coupon Used: <%= link_to "#{@invoice.coupon.name} #{@invoice.coupon.code}", merchant_coupon_path(@invoice.coupon.merchant, @invoice.coupon) %></p>
+  <% end %>
 
   <h4>Customer:</h4>
     <%= @customer.first_name %> <%= @customer.last_name %><br>
