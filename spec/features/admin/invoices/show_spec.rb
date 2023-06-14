@@ -80,7 +80,6 @@ describe "Admin Invoices Index Page" do
   end
 
   it "displays the Grand Total Revenue (total revenue minus applied discount)" do
-    save_and_open_page
     expect(page).to have_content("Grand Total Revenue: $28.50")
     expect(page).to have_content("Grand Total Revenue: $#{@i1.gross_profit}")
     expect(page).to_not have_content(@i2.gross_profit)
