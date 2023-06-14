@@ -4,11 +4,14 @@ describe "Admin Invoices Index Page" do
   before :each do
     @m1 = Merchant.create!(name: "Merchant 1")
 
+    @coupon_1 = @m1.coupons.create!(name: "5% off!", code: "5-P", status: 0, discount_type: 1, discount_value: 5)
+    @coupon_2 = @m1.coupons.create!(name: "$25 off!", code: "25-D", status: 1, discount_type: 0, discount_value: 25)
+
     @c1 = Customer.create!(first_name: "Yo", last_name: "Yoz", address: "123 Heyyo", city: "Whoville", state: "CO", zip: 12345)
     @c2 = Customer.create!(first_name: "Hey", last_name: "Heyz")
 
-    @i1 = Invoice.create!(customer_id: @c1.id, status: 2, created_at: "2012-03-25 09:54:09")
-    @i2 = Invoice.create!(customer_id: @c2.id, status: 1, created_at: "2012-03-25 09:30:09")
+    @i1 = @coupon_1.invoices.create!(customer_id: @c1.id, status: 2, created_at: "2012-03-25 09:54:09")
+    @i2 = @coupon_2.invoices.create!(customer_id: @c2.id, status: 1, created_at: "2012-03-25 09:30:09")
 
     @item_1 = Item.create!(name: "test", description: "lalala", unit_price: 6, merchant_id: @m1.id)
     @item_2 = Item.create!(name: "rest", description: "dont test me", unit_price: 12, merchant_id: @m1.id)
@@ -68,5 +71,18 @@ describe "Admin Invoices Index Page" do
       expect(current_path).to eq(admin_invoice_path(@i1))
       expect(@i1.status).to eq("completed")
     end
+  end
+
+  it "displays the Subtotal (total cost without applied discount)" do
+    expect(page).to have_content("Subtotal: $30.00")
+    expect(page).to have_content("Subtotal: $#{@i1.total_revenue}")
+    expect(page).to_not have_content(@i2.total_revenue)
+  end
+
+  it "displays the Grand Total Revenue (total revenue minus applied discount)" do
+    save_and_open_page
+    expect(page).to have_content("Grand Total Revenue: $28.50")
+    expect(page).to have_content("Grand Total Revenue: $#{@i1.gross_profit}")
+    expect(page).to_not have_content(@i2.gross_profit)
   end
 end
